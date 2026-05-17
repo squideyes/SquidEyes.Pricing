@@ -1,30 +1,49 @@
-name: Release
+name: Release Please
 
 on:
   push:
-    tags: ["v*"]
+    branches: [master]
 
-# Opt in to Node 24 for all JS actions before it becomes the default (June 2026).
-# Silences the "Node.js 20 actions are deprecated" warning. Can drop once the
-# referenced actions ship native Node 24 versions.
+permissions:
+  contents: write
+  pull-requests: write
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  publish:
+  # 1. Maintain the release PR. If a release commit was just merged, this also
+  #    creates the GitHub Release + the v* tag and signals downstream via outputs.
+  release-please:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name:        ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file:   release-please-config.json
+          manifest-file: .release-please-manifest.json
+          target-branch: master
+
+  # 2. Only runs when release-please actually cut a release on this push.
+  #    Builds, tests, packs, and pushes to NuGet.org.
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: true     # MinVer needs the annotated tag itself, not just history
+          fetch-tags:  true
+          ref:         ${{ needs.release-please.outputs.tag_name }}
 
       - name: Show resolved version (diagnostic)
         run: |
-          echo "Tags in checkout:"
-          git tag
+          echo "Tag we built:"
+          echo "  ${{ needs.release-please.outputs.tag_name }}"
           echo "git describe:"
           git describe --tags --always --long
 
@@ -35,7 +54,6 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-      # Verbose MinVer logging so we can see exactly what version it resolved and why.
       - name: Build
         run: dotnet build -c Release --no-restore -p:MinVerVerbosity=detailed
 
@@ -45,8 +63,6 @@ jobs:
       - name: Pack
         run: dotnet pack -c Release --no-build -o artifacts -p:MinVerVerbosity=detailed
 
-      # Hard-fail if MinVer fell back to its 0.0.0-alpha.0 placeholder — better to
-      # abort than to publish another ghost version to NuGet.org.
       - name: Refuse to publish a no-tag fallback
         run: |
           if ls artifacts/*0.0.0-alpha.0.*.nupkg 2>/dev/null; then
@@ -57,8 +73,6 @@ jobs:
       - name: Push to NuGet.org
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        # `dotnet nuget push *.nupkg` automatically discovers and pushes the matching
-        # *.snupkg next to it, so a separate snupkg push line would conflict.
         run: |
           dotnet nuget push "artifacts/*.nupkg" \
             --api-key "$NUGET_API_KEY" \
