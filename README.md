@@ -10,7 +10,8 @@ Pricing-data primitives for futures backtesting:
 - `SessionKind` — named ET trading windows (`DTH`, `MTH`, `RTH`) with simple expansion to `(TimeOnly From, TimeOnly Until)`
 - `Session` — `SessionKind` + date, validated against a US-futures holiday calendar. Supports `Embargo`s (no-trade sub-windows) of three kinds: **AdHoc** (explicit times), **News** (anchored to a wall-clock DateTime, widened by `NewsImpactDefaults`), and **Anchored** (relative to session Start/End for a `TimeSpan`). `session.IsTradable(when)` answers "in window AND not embargoed?"
 - `TickSet` — immutable, ordered collection of `(OnET, Kind, Price, Size)` ticks with same-key aggregation
-- `TickSetEncoder` / `TickSetDecoder` — **STBA** (Squideyes Trade/Bid/Ask) compact binary format; typically ~10× smaller than Parquet for MBP-1 tick streams
+- `Candle` — single OHLCV bar over an arbitrary `[FromET, UntilET)` window. Interval-agnostic — build tick-by-tick via `AddTrade`/`TryAdd`, or load from pre-computed OHLCV. Trade-only (Bid/Ask quotes are silently skipped by `TryAdd`).
+- `StbaEncoder` / `StbaDecoder` — **STBA** (Squideyes Trade/Bid/Ask) compact binary format; typically ~10× smaller than Parquet for MBP-1 tick streams
 
 ## Install
 
@@ -41,12 +42,12 @@ var tradeCount = ticks.Count(t => (t.Kind & PriceKind.Trade) != 0);
 
 // Encode to STBA
 using (var fs = File.Create("ES_20260105_H26.stba"))
-    TickSetEncoder.Encode(ticks, fs);
+    StbaEncoder.Encode(ticks, fs);
 
 // Decode
 using (var fs = File.OpenRead("ES_20260105_H26.stba"))
 {
-    var decoded = TickSetDecoder.Decode(fs);
+    var decoded = StbaDecoder.Decode(fs);
     foreach (var tick in decoded)
         Console.WriteLine($"{tick.OnET:o}  {tick.Kind}  {tick.Price}  {tick.Volume}");
 }
@@ -89,14 +90,14 @@ wire_kind (2 bits):
 
 TradeBid and TradeAsk share one trade-price delta stream because futures trades alternate aggressor rapidly at near-identical prices; sharing yields tighter price deltas than two separate streams.
 
-The encoder is deterministic — byte-identical output for byte-identical input. See [TickSetEncoder.cs](src/SquidEyes.Pricing/Stba/TickSetEncoder.cs).
+The encoder is deterministic — byte-identical output for byte-identical input. See [StbaEncoder.cs](src/SquidEyes.Pricing/Stba/StbaEncoder.cs).
 
 ## Namespace map
 
 | Namespace | What's in it |
 | --- | --- |
-| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `Tick`, `TickSet`, `SymbolContractParser`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`) |
-| `SquidEyes.Pricing.Stba` | `TickSetEncoder`, `TickSetDecoder` |
+| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `Tick`, `TickSet`, `Candle`, `SymbolContractParser`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`) |
+| `SquidEyes.Pricing.Stba` | `StbaEncoder`, `StbaDecoder` |
 
 ## Opinionated choices
 

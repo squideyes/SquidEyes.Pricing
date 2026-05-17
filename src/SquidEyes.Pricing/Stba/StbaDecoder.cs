@@ -2,7 +2,7 @@ using System.IO.Compression;
 
 namespace SquidEyes.Pricing.Stba;
 
-public static class TickSetDecoder
+public static class StbaDecoder
 {
     private static readonly byte[] ExpectedMagic = "STBA"u8.ToArray();
     private const byte ExpectedVersion = 4;

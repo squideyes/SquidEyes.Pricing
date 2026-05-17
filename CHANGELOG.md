@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SessionAnchor` enum (`Start`, `End`) for anchored embargoes.
 - `Session.IsTradable(when)` — convenience: in session window AND not embargoed.
 - `Session.IsEmbargoed(when)` — true if any attached embargo covers `when`.
+- `Candle` — single OHLCV bar over an arbitrary `[FromET, UntilET)` window. Two constructors: load pre-computed OHLCV, or start empty and build tick-by-tick via `AddTrade(price, size)` / `TryAdd(Tick)`. Trade-only (`TryAdd` silently skips Bid/Ask quotes and out-of-window ticks). Mutable by design — accumulating one trade at a time would otherwise allocate a new instance per tick.
 
 ### Changed
 
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING:** Renamed `TimeRange` → `SessionKind`, `TimeRangeExtenders` → `SessionKindExtenders`. The enum is "what kind of session" — the concrete realized window is now called `Session`.
 - **BREAKING:** Renamed `TickSpan` → `Session`. `Session` is now a class (was a readonly struct), carries its `SessionKind`, and owns a list of `Embargo`s.
 - **BREAKING:** `TickSpan.MinDate` / `MaxDate` → `Session.MinDate` / `MaxDate`.
+- **BREAKING:** Renamed `TickSetEncoder` → `StbaEncoder` and `TickSetDecoder` → `StbaDecoder`. Classes are STBA-format-specific; naming them after the format reads more clearly and leaves room for future format-specific encoder/decoder pairs.
 - **BREAKING:** Collapsed `SquidEyes.Pricing.Calendars` namespace into the root `SquidEyes.Pricing`. `DateOnlyExtenders` is now reachable with just `using SquidEyes.Pricing;`.
 - `HolidayExtenders` and `GenericValueExtenders` are now `internal` — they were implementation details previously leaking into the public surface.
 - **BREAKING:** `PriceKind` is now a `[Flags]` enum with four members starting at 1: `Bid=1`, `Ask=2`, `TradeBid=4`, `TradeAsk=8`. The previous `Trade=2` becomes a derived mask `Trade = TradeBid | TradeAsk` (test "is this any trade" via `(kind & PriceKind.Trade) != 0`).
@@ -38,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial public release.
 - `Symbol`, `Instrument`, `Contract`, `Source`, `PriceKind`, `TimeRange`, `TickSpan`, `Tick`, `TickSet` primitives.
 - `SymbolContractParser` for Databento-style symbol+contract strings.
-- STBA (v3) binary format encoder/decoder under `SquidEyes.Pricing.Stba`.
+- STBA (v4) binary format encoder/decoder (`StbaEncoder` / `StbaDecoder`) under `SquidEyes.Pricing.Stba`.
 - US futures holiday calendar under `SquidEyes.Pricing.Calendars`.
 - 150 unit tests covering roundtrip encoding, calendar logic, instrument/contract validation.
 

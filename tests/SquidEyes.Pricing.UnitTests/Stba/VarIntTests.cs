@@ -15,9 +15,9 @@ public class VarIntTests
     public void Unsigned_Roundtrip(int value)
     {
         using var ms = new MemoryStream();
-        TickSetEncoder.WriteVarInt(ms, value);
+        StbaEncoder.WriteVarInt(ms, value);
         ms.Position = 0;
-        var decoded = TickSetDecoder.ReadVarInt(ms);
+        var decoded = StbaDecoder.ReadVarInt(ms);
         Assert.Equal(value, decoded);
     }
 
@@ -32,9 +32,9 @@ public class VarIntTests
     public void Signed_Roundtrip(int value)
     {
         using var ms = new MemoryStream();
-        TickSetEncoder.WriteSignedVarInt(ms, value);
+        StbaEncoder.WriteSignedVarInt(ms, value);
         ms.Position = 0;
-        var decoded = TickSetDecoder.ReadSignedVarInt(ms);
+        var decoded = StbaDecoder.ReadSignedVarInt(ms);
         Assert.Equal(value, decoded);
     }
 
@@ -42,7 +42,7 @@ public class VarIntTests
     public void ReadVarInt_EmptyStream_Throws()
     {
         using var ms = new MemoryStream();
-        Assert.Throws<EndOfStreamException>(() => TickSetDecoder.ReadVarInt(ms));
+        Assert.Throws<EndOfStreamException>(() => StbaDecoder.ReadVarInt(ms));
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class VarIntTests
     {
         // 0x80 = continuation bit set with low nibble 0 — needs at least one more byte
         using var ms = new MemoryStream([0x80]);
-        Assert.Throws<EndOfStreamException>(() => TickSetDecoder.ReadVarInt(ms));
+        Assert.Throws<EndOfStreamException>(() => StbaDecoder.ReadVarInt(ms));
     }
 
     [Fact]
@@ -58,6 +58,6 @@ public class VarIntTests
     {
         // Six 0x80 bytes = 5 continuations + still asking for more → exceeds MaxVarIntShift (35)
         using var ms = new MemoryStream([0x80, 0x80, 0x80, 0x80, 0x80, 0x80]);
-        Assert.Throws<InvalidDataException>(() => TickSetDecoder.ReadVarInt(ms));
+        Assert.Throws<InvalidDataException>(() => StbaDecoder.ReadVarInt(ms));
     }
 }

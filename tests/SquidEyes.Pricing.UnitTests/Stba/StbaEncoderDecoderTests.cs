@@ -3,7 +3,7 @@ using SquidEyes.Pricing.Stba;
 
 namespace SquidEyes.Pricing.UnitTests.Stba;
 
-public class TickSetEncoderDecoderTests
+public class StbaEncoderDecoderTests
 {
     private static readonly Instrument ES = Symbol.ES;
     private static readonly Instrument NQ = Symbol.NQ;
@@ -152,12 +152,12 @@ public class TickSetEncoderDecoderTests
         var original = builder.Build();
 
         using var ms1 = new MemoryStream();
-        TickSetEncoder.Encode(original, ms1);
+        StbaEncoder.Encode(original, ms1);
         var bytes1 = ms1.ToArray();
 
         var decoded = RoundTrip(original);
         using var ms2 = new MemoryStream();
-        TickSetEncoder.Encode(decoded, ms2);
+        StbaEncoder.Encode(decoded, ms2);
         var bytes2 = ms2.ToArray();
 
         Assert.Equal(bytes1, bytes2);
@@ -197,7 +197,7 @@ public class TickSetEncoderDecoderTests
     {
         var data = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x04 };
         using var ms = new MemoryStream(data);
-        Assert.Throws<InvalidDataException>(() => TickSetDecoder.Decode(ms));
+        Assert.Throws<InvalidDataException>(() => StbaDecoder.Decode(ms));
     }
 
     [Fact]
@@ -205,7 +205,7 @@ public class TickSetEncoderDecoderTests
     {
         var data = "STBA"u8.ToArray().Concat(new byte[] { 0x03 }).ToArray();
         using var ms = new MemoryStream(data);
-        Assert.Throws<InvalidDataException>(() => TickSetDecoder.Decode(ms));
+        Assert.Throws<InvalidDataException>(() => StbaDecoder.Decode(ms));
     }
 
     [Fact]
@@ -216,14 +216,14 @@ public class TickSetEncoderDecoderTests
         var ts = builder.Build();
 
         using var ms = new MemoryStream();
-        Assert.Throws<InvalidOperationException>(() => TickSetEncoder.Encode(ts, ms));
+        Assert.Throws<InvalidOperationException>(() => StbaEncoder.Encode(ts, ms));
     }
 
     private static TickSet RoundTrip(TickSet original)
     {
         using var encoded = new MemoryStream();
-        TickSetEncoder.Encode(original, encoded);
+        StbaEncoder.Encode(original, encoded);
         encoded.Position = 0;
-        return TickSetDecoder.Decode(encoded);
+        return StbaDecoder.Decode(encoded);
     }
 }
