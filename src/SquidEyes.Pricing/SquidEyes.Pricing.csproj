@@ -3,10 +3,10 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>SquidEyes.Pricing</PackageId>
-    <Authors>SquidEyes</Authors>
-    <Company>SquidEyes</Company>
+    <Authors>Louis S. Berman</Authors>
+    <Company>SquidEyes, LLC</Company>
     <Description>Pricing-data primitives for futures backtesting: Symbol/Asset/Contract, TimeRange + holiday-aware trade-date calendar, immutable TickSets, and the STBA (Squideyes Trade/Bid/Ask) compact binary format — typically ~10x smaller than Parquet for MBP-1 tick streams.</Description>
-    <PackageTags>pricing;ticks;tickset;futures;stba;mbp-1;backtest;binary-format;cme</PackageTags>
+    <PackageTags>pricing;ticks;tickset;futures;stba;backtest;binary-format;cme</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/squideyes/SquidEyes.Pricing</PackageProjectUrl>
@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Icon.jpg" Pack="true" PackagePath="" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
