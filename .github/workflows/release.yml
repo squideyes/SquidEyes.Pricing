@@ -4,6 +4,12 @@ on:
   push:
     tags: ["v*"]
 
+# Opt in to Node 24 for all JS actions before it becomes the default (June 2026).
+# Silences the "Node.js 20 actions are deprecated" warning. Can drop once the
+# referenced actions ship native Node 24 versions.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
