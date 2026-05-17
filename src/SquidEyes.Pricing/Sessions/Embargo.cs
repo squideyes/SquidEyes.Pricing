@@ -105,9 +105,9 @@ public sealed class Embargo
 
     private (TimeOnly From, TimeOnly Until) ResolveNewsRange()
     {
-        var (before, after) = NewsImpactDefaults.For(Impact!.Value);
-        var fromDt  = NewsAt!.Value.AddMinutes(-before);
-        var untilDt = NewsAt!.Value.AddMinutes(after);
+        var (pre, post) = NewsImpactDefaults.For(Impact!.Value);
+        var fromDt  = NewsAt!.Value.AddMinutes(-pre);
+        var untilDt = NewsAt!.Value.AddMinutes(post);
 
         return (TimeOnly.FromDateTime(fromDt), TimeOnly.FromDateTime(untilDt));
     }

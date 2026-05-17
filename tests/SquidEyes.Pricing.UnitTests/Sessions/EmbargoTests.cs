@@ -112,6 +112,30 @@ public class EmbargoTests
             () => s.AddNewsEmbargo(new DateTime(2024, 1, 2, 14, 30, 0), NewsImpact.High, ""));
     }
 
+    [Fact]
+    public void News_LowImpact_UsesGlobalDefaults_1Before_2After()
+    {
+        var s = NewDth();
+        var at = new DateTime(2024, 1, 2, 14, 30, 0);
+        var e = s.AddNewsEmbargo(at, NewsImpact.Low, "minor data point");
+        var (from, until) = e.ResolveRange(s);
+
+        Assert.Equal(new TimeOnly(14, 29), from);    // 1 before
+        Assert.Equal(new TimeOnly(14, 32), until);   // 2 after
+    }
+
+    [Fact]
+    public void News_LowImpact_IsEmbargoed_InsideWindow_True()
+    {
+        var s = NewDth();
+        var e = s.AddNewsEmbargo(new DateTime(2024, 1, 2, 14, 30, 0), NewsImpact.Low, "data");
+
+        Assert.False(e.IsEmbargoed(s, new DateTime(2024, 1, 2, 14, 28, 59)));
+        Assert.True (e.IsEmbargoed(s, new DateTime(2024, 1, 2, 14, 29, 0)));
+        Assert.True (e.IsEmbargoed(s, new DateTime(2024, 1, 2, 14, 31, 59)));
+        Assert.False(e.IsEmbargoed(s, new DateTime(2024, 1, 2, 14, 32, 0)));
+    }
+
     // ── Anchored ───────────────────────────────────────────────────────
 
     [Fact]

@@ -8,10 +8,9 @@ public class NewsImpactDefaultsTests
     public void Defaults_MatchSpec()
     {
         // Reading the static defaults — also acts as a regression guard if someone changes them.
-        Assert.Equal(5,  NewsImpactDefaults.HighBeforeMinutes);
-        Assert.Equal(15, NewsImpactDefaults.HighAfterMinutes);
-        Assert.Equal(3,  NewsImpactDefaults.MediumBeforeMinutes);
-        Assert.Equal(10, NewsImpactDefaults.MediumAfterMinutes);
+        Assert.Equal(new PrePost(5, 15), NewsImpactDefaults.High);
+        Assert.Equal(new PrePost(3, 10), NewsImpactDefaults.Medium);
+        Assert.Equal(new PrePost(1,  2), NewsImpactDefaults.Low);
     }
 
     [Fact]
