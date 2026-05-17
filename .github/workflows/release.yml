@@ -35,14 +35,24 @@ jobs:
       - name: Restore
         run: dotnet restore
 
+      # Verbose MinVer logging so we can see exactly what version it resolved and why.
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build -c Release --no-restore -p:MinVerVerbosity=detailed
 
       - name: Test
         run: dotnet test -c Release --no-build
 
       - name: Pack
-        run: dotnet pack -c Release --no-build -o artifacts
+        run: dotnet pack -c Release --no-build -o artifacts -p:MinVerVerbosity=detailed
+
+      # Hard-fail if MinVer fell back to its 0.0.0-alpha.0 placeholder — better to
+      # abort than to publish another ghost version to NuGet.org.
+      - name: Refuse to publish a no-tag fallback
+        run: |
+          if ls artifacts/*0.0.0-alpha.0.*.nupkg 2>/dev/null; then
+            echo "::error::MinVer produced a no-tag fallback version. Aborting before push."
+            exit 1
+          fi
 
       - name: Push to NuGet.org
         env:
