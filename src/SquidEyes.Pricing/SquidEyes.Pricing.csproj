@@ -18,6 +18,9 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- Tags are named like "v0.1.0". MinVer defaults to no prefix, so it'd otherwise
+         reject them as non-version tags and fall back to 0.0.0-alpha.0. -->
+    <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
 
   <ItemGroup>
