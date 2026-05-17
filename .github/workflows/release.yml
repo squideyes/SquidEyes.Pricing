@@ -19,6 +19,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true     # MinVer needs the annotated tag itself, not just history
+
+      - name: Show resolved version (diagnostic)
+        run: |
+          echo "Tags in checkout:"
+          git tag
+          echo "git describe:"
+          git describe --tags --always --long
 
       - uses: actions/setup-dotnet@v4
         with:
