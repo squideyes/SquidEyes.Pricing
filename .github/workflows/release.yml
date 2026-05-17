@@ -47,12 +47,10 @@ jobs:
       - name: Push to NuGet.org
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        # `dotnet nuget push *.nupkg` automatically discovers and pushes the matching
+        # *.snupkg next to it, so a separate snupkg push line would conflict.
         run: |
           dotnet nuget push "artifacts/*.nupkg" \
-            --api-key "$NUGET_API_KEY" \
-            --source https://api.nuget.org/v3/index.json \
-            --skip-duplicate
-          dotnet nuget push "artifacts/*.snupkg" \
             --api-key "$NUGET_API_KEY" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
