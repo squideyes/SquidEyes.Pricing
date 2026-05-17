@@ -1,0 +1,27 @@
+<Solution>
+  <Folder Name="/Code/">
+    <Project Path="src/SquidEyes.Pricing/SquidEyes.Pricing.csproj" />
+  </Folder>
+  <Folder Name="/Docs/">
+    <File Path="CHANGELOG.md" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution/" />
+  <Folder Name="/Solution/.github/" />
+  <Folder Name="/Solution/.github/workflows/">
+    <File Path=".github/workflows/ci.yml" />
+    <File Path=".github/workflows/release.yml" />
+  </Folder>
+  <Folder Name="/Solution/Configuration/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path=".markdownlint.json" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="NuGet.config" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/SquidEyes.Pricing.UnitTests/SquidEyes.Pricing.UnitTests.csproj" />
+  </Folder>
+</Solution>

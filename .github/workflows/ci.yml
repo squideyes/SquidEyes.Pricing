@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # MinVer needs full history + tags
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        run: dotnet test -c Release --no-build --logger "trx;LogFileName=tests.trx"
+
+      - name: Pack
+        run: dotnet pack -c Release --no-build -o artifacts
+
+      - name: Upload nupkgs
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkgs
+          path: artifacts/*.*nupkg
+          if-no-files-found: error

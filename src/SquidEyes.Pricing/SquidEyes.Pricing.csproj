@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>SquidEyes.Pricing</PackageId>
+    <Authors>SquidEyes</Authors>
+    <Company>SquidEyes</Company>
+    <Description>Pricing-data primitives for futures backtesting: Symbol/Asset/Contract, TimeRange + holiday-aware trade-date calendar, immutable TickSets, and the STBA (Squideyes Trade/Bid/Ask) compact binary format — typically ~10x smaller than Parquet for MBP-1 tick streams.</Description>
+    <PackageTags>pricing;ticks;tickset;futures;stba;mbp-1;backtest;binary-format;cme</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/squideyes/SquidEyes.Pricing</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/squideyes/SquidEyes.Pricing</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SquidEyes.Pricing.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

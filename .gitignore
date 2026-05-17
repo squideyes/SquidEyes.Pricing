@@ -1,0 +1,18 @@
+## .NET
+bin/
+obj/
+out/
+artifacts/
+*.user
+*.suo
+.vs/
+.vscode/
+*.swp
+
+## Build outputs
+*.nupkg
+*.snupkg
+
+## OS / IDE
+.DS_Store
+Thumbs.db
