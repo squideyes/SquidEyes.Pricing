@@ -12,7 +12,11 @@ Pricing-data primitives for futures backtesting:
 - `TickSet` — immutable, ordered collection of `(OnET, Kind, Price, Size)` ticks with same-key aggregation
 - `Candle` — single OHLCV bar over an arbitrary `[FromET, UntilET)` window. Interval-agnostic — build tick-by-tick via `AddTrade`/`TryAdd`, or load from pre-computed OHLCV. Trade-only (Bid/Ask quotes are silently skipped by `TryAdd`).
 - `CandleSet` — rolling, capacity-bounded collection of candles built tick-by-tick. Two flavours: `IntervalCandleSet` (time-bucketed, wall-clock aligned) and `RenkoCandleSet` (price-driven; brick size = `brickTicks * Instrument.TickSize`, with or without wicks). Both raise a `CandleClosed` event and expose newest-first indexing (`set[0]` = most recent).
+- `EasternTime` — shared DST-correct ET ↔ UTC helpers (`FromUtc`, `ToUtc`, `TodayEt`, `WindowToUtc`). Single source of truth for "what zone does this library think it's in?"
+- `PricingFile` — canonical SquidEyes filename convention `{Symbol}_{yyyyMMdd}_{Contract}_{Source}_{Session}_ET`. `BuildStem` produces it; `TryParseStem` recovers the typed tuple back out.
+- `DateOnlyExtenders` trade-calendar query helpers — `IsTradeDate`, `EarliestTradeDate`, `LatestTradeDateBefore`, `EnumerateTradeDates`.
 - `StbaEncoder` / `StbaDecoder` — **STBA** (Squideyes Trade/Bid/Ask) compact binary format; typically ~10× smaller than Parquet for MBP-1 tick streams
+- `StbaCsvEncoder` — symmetric CSV companion to `StbaEncoder`. Same logical content (`OnET,Kind,Price,Size`, kinds `B/A/H/L`), human-readable, diffable.
 
 ## Install
 
@@ -114,8 +118,8 @@ The encoder is deterministic — byte-identical output for byte-identical input.
 
 | Namespace | What's in it |
 | --- | --- |
-| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `PrePost`, `Tick`, `TickSet`, `Candle`, `CandleSet`, `IntervalCandleSet`, `RenkoCandleSet`, `CandleClosedEventArgs`, `SymbolContractParser`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`) |
-| `SquidEyes.Pricing.Stba` | `StbaEncoder`, `StbaDecoder` |
+| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `PrePost`, `Tick`, `TickSet`, `Candle`, `CandleSet`, `IntervalCandleSet`, `RenkoCandleSet`, `CandleClosedEventArgs`, `SymbolContractParser`, `EasternTime`, `PricingFile`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`, `EarliestTradeDate`, `LatestTradeDateBefore`, `EnumerateTradeDates`) |
+| `SquidEyes.Pricing.Stba` | `StbaEncoder`, `StbaDecoder`, `StbaCsvEncoder` |
 
 ## Opinionated choices
 
