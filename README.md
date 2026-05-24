@@ -11,6 +11,7 @@ Pricing-data primitives for futures backtesting:
 - `Session` — `SessionKind` + date, validated against a US-futures holiday calendar. Supports `Embargo`s (no-trade sub-windows) of three kinds: **AdHoc** (explicit times), **News** (anchored to a wall-clock DateTime, widened by `NewsImpactDefaults`), and **Anchored** (relative to session Start/End for a `TimeSpan`). `session.IsTradable(when)` answers "in window AND not embargoed?"
 - `TickSet` — immutable, ordered collection of `(OnET, Kind, Price, Size)` ticks with same-key aggregation
 - `Candle` — single OHLCV bar over an arbitrary `[FromET, UntilET)` window. Interval-agnostic — build tick-by-tick via `AddTrade`/`TryAdd`, or load from pre-computed OHLCV. Trade-only (Bid/Ask quotes are silently skipped by `TryAdd`).
+- `CandleSet` — rolling, capacity-bounded collection of candles built tick-by-tick. Two flavours: `IntervalCandleSet` (time-bucketed, wall-clock aligned) and `RenkoCandleSet` (price-driven; brick size = `brickTicks * Instrument.TickSize`, with or without wicks). Both raise a `CandleClosed` event and expose newest-first indexing (`set[0]` = most recent).
 - `StbaEncoder` / `StbaDecoder` — **STBA** (Squideyes Trade/Bid/Ask) compact binary format; typically ~10× smaller than Parquet for MBP-1 tick streams
 
 ## Install
@@ -59,6 +60,23 @@ session.AddAnchoredEmbargo(SessionAnchor.End,   TimeSpan.FromMinutes(1), "close-
 session.AddNewsEmbargo(new DateTime(2026, 1, 5, 14, 0, 0), NewsImpact.High, "FOMC");
 
 var tradable = ticks.Where(t => session.IsTradable(t.OnET)).ToList();
+
+// Build 1-minute interval candles and 4-tick Renko bricks tick-by-tick
+var oneMin = new IntervalCandleSet(intervalSeconds: 60, capacity: 390);
+var renko  = new RenkoCandleSet(Instrument.Create(Symbol.ES),
+                                brickTicks: 4, capacity: 200, withWicks: true);
+
+oneMin.CandleClosed += (_, e) =>
+    Console.WriteLine($"1m closed: {e.ClosedCandle.FromET:HH:mm} O={e.ClosedCandle.Open} C={e.ClosedCandle.Close}");
+
+foreach (var tick in ticks)
+{
+    oneMin.ProcessTick(tick);
+    renko.ProcessTick(tick);
+}
+
+var lastMinute = oneMin.Current;   // in-progress bar
+var lastBrick  = renko.Current;    // most recently closed brick (Renko bricks are born closed)
 ```
 
 ## STBA binary format (v4)
@@ -96,7 +114,7 @@ The encoder is deterministic — byte-identical output for byte-identical input.
 
 | Namespace | What's in it |
 | --- | --- |
-| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `Tick`, `TickSet`, `Candle`, `SymbolContractParser`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`) |
+| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `PrePost`, `Tick`, `TickSet`, `Candle`, `CandleSet`, `IntervalCandleSet`, `RenkoCandleSet`, `CandleClosedEventArgs`, `SymbolContractParser`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`) |
 | `SquidEyes.Pricing.Stba` | `StbaEncoder`, `StbaDecoder` |
 
 ## Opinionated choices

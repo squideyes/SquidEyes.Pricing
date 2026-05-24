@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Session.IsTradable(when)` — convenience: in session window AND not embargoed.
 - `Session.IsEmbargoed(when)` — true if any attached embargo covers `when`.
 - `Candle` — single OHLCV bar over an arbitrary `[FromET, UntilET)` window. Two constructors: load pre-computed OHLCV, or start empty and build tick-by-tick via `AddTrade(price, size)` / `TryAdd(Tick)`. Trade-only (`TryAdd` silently skips Bid/Ask quotes and out-of-window ticks). Mutable by design — accumulating one trade at a time would otherwise allocate a new instance per tick.
+- `CandleSet` — rolling collection of `Candle`s built tick-by-tick, with capacity-based FIFO eviction (newest at index `0`, oldest evicted when full) and a `CandleClosed` event. Two concrete kinds: `IntervalCandleSet(intervalSeconds, capacity)` for time-bucketed bars (wall-clock aligned via floor-to-interval), and `RenkoCandleSet(instrument, brickTicks, capacity, withWicks)` for price-driven Renko bricks. Renko brick size is a tick count multiplied by the instrument's `TickSize` (so brick math is exact); price reversals or single-tick chains emit multiple bricks in one call. With wicks: only the chain's first/last bricks carry extension wicks (interior bricks are body-only).
 
 ### Changed
 
