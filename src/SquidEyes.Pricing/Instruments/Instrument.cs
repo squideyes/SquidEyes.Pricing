@@ -46,16 +46,23 @@ public sealed class Instrument
     {
         var specs = new Dictionary<Symbol, (InstrumentKind Kind, decimal TickSize, double PointValue)>
         {
-            [Symbol.ES] = (InstrumentKind.Future, 0.25m,       50.0),
-            [Symbol.NQ] = (InstrumentKind.Future, 0.25m,       20.0),
-            [Symbol.CL] = (InstrumentKind.Future, 0.01m,       1000.0),
-            [Symbol.GC] = (InstrumentKind.Future, 0.10m,       100.0),
-            [Symbol.TY] = (InstrumentKind.Future, 0.015625m,   1000.0),
-            [Symbol.FV] = (InstrumentKind.Future, 0.0078125m,  1000.0),
-            [Symbol.US] = (InstrumentKind.Future, 0.03125m,    1000.0),
-            [Symbol.JY] = (InstrumentKind.Future, 0.0000005m,  125000.0),
-            [Symbol.EU] = (InstrumentKind.Future, 0.00005m,    125000.0),
-            [Symbol.BP] = (InstrumentKind.Future, 0.0001m,     62500.0),
+            [Symbol.ES]  = (InstrumentKind.Future, 0.25m,       50.0),
+            [Symbol.NQ]  = (InstrumentKind.Future, 0.25m,       20.0),
+            [Symbol.CL]  = (InstrumentKind.Future, 0.01m,       1000.0),
+            [Symbol.GC]  = (InstrumentKind.Future, 0.10m,       100.0),
+            [Symbol.TY]  = (InstrumentKind.Future, 0.015625m,   1000.0),
+            [Symbol.FV]  = (InstrumentKind.Future, 0.0078125m,  1000.0),
+            [Symbol.US]  = (InstrumentKind.Future, 0.03125m,    1000.0),
+            [Symbol.JY]  = (InstrumentKind.Future, 0.0000005m,  125000.0),
+            [Symbol.EU]  = (InstrumentKind.Future, 0.00005m,    125000.0),
+            [Symbol.BP] =  (InstrumentKind.Future, 0.0001m,     62500.0),
+            // E-micro futures — 1/10 the notional of their big siblings.
+            [Symbol.MES] = (InstrumentKind.Future, 0.25m,       5.0),
+            [Symbol.MNQ] = (InstrumentKind.Future, 0.25m,       2.0),
+            [Symbol.RTY] = (InstrumentKind.Future, 0.10m,       50.0),
+            [Symbol.M2K] = (InstrumentKind.Future, 0.10m,       5.0),
+            [Symbol.MGC] = (InstrumentKind.Future, 0.10m,       10.0),
+            [Symbol.MCL] = (InstrumentKind.Future, 0.01m,       100.0),
         };
 
         var values = Enum.GetValues<Symbol>();

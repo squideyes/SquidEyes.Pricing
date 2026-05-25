@@ -6,8 +6,10 @@ public readonly struct Contract : IEquatable<Contract>
 
     private static readonly Dictionary<Symbol, char[]> MonthsBySymbol = new()
     {
-        [Symbol.CL] = AllMonths,
-        [Symbol.GC] = ['G', 'J', 'M', 'Q', 'V', 'Z'],
+        [Symbol.CL]  = AllMonths,
+        [Symbol.MCL] = AllMonths,
+        [Symbol.GC]  = ['G', 'J', 'M', 'Q', 'V', 'Z'],
+        [Symbol.MGC] = ['G', 'J', 'M', 'Q', 'V', 'Z'],
     };
 
     private static readonly char[] Quarterly = ['H', 'M', 'U', 'Z'];

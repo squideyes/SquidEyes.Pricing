@@ -11,5 +11,11 @@ public enum Symbol : byte
     US,
     JY,
     EU,
-    BP
+    BP,
+    MES,
+    MNQ,
+    RTY,
+    M2K,
+    MGC,
+    MCL
 }

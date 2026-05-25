@@ -9,6 +9,12 @@ public class InstrumentTests
     [InlineData(Symbol.NQ, 0.25)]
     [InlineData(Symbol.CL, 0.01)]
     [InlineData(Symbol.GC, 0.10)]
+    [InlineData(Symbol.MES, 0.25)]
+    [InlineData(Symbol.MNQ, 0.25)]
+    [InlineData(Symbol.RTY, 0.10)]
+    [InlineData(Symbol.M2K, 0.10)]
+    [InlineData(Symbol.MGC, 0.10)]
+    [InlineData(Symbol.MCL, 0.01)]
     public void Create_ReturnsCorrectTickSize(Symbol symbol, decimal expectedTickSize)
     {
         var instrument = Instrument.Create(symbol);
@@ -27,6 +33,12 @@ public class InstrumentTests
     [InlineData(Symbol.JY)]
     [InlineData(Symbol.EU)]
     [InlineData(Symbol.BP)]
+    [InlineData(Symbol.MES)]
+    [InlineData(Symbol.MNQ)]
+    [InlineData(Symbol.RTY)]
+    [InlineData(Symbol.M2K)]
+    [InlineData(Symbol.MGC)]
+    [InlineData(Symbol.MCL)]
     public void Create_KindIsFuture(Symbol symbol)
     {
         var instrument = Instrument.Create(symbol);
@@ -97,6 +109,12 @@ public class InstrumentTests
     [InlineData(Symbol.JY, 125000.0)]
     [InlineData(Symbol.EU, 125000.0)]
     [InlineData(Symbol.BP, 62500.0)]
+    [InlineData(Symbol.MES, 5.0)]
+    [InlineData(Symbol.MNQ, 2.0)]
+    [InlineData(Symbol.RTY, 50.0)]
+    [InlineData(Symbol.M2K, 5.0)]
+    [InlineData(Symbol.MGC, 10.0)]
+    [InlineData(Symbol.MCL, 100.0)]
     public void PointValue_MatchesSpec(Symbol symbol, double expectedPointValue)
     {
         var instrument = Instrument.Create(symbol);
