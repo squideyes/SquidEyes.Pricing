@@ -22,7 +22,7 @@ public sealed class TickSet : IEnumerable<Tick>
     public IEnumerator<Tick> GetEnumerator()
     {
         var baseDate = Date.ToDateTime(TimeOnly.MinValue);
-        var tickSize = (double)Instrument.TickSize;
+        var tickSize = Instrument.TickSize;
 
         foreach (var td in ticks)
         {
@@ -79,7 +79,7 @@ public sealed class TickSet : IEnumerable<Tick>
             ticks.Add(tick);
         }
 
-        public void Add(int timeMs, PriceKind kind, decimal price, int size)
+        public void Add(int timeMs, PriceKind kind, double price, int size)
         {
             var priceTicks = (int)Math.Round(price / instrument.TickSize);
             Add(timeMs, kind, priceTicks, size);

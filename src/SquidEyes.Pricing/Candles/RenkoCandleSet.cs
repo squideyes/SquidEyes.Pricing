@@ -54,7 +54,11 @@ public sealed class RenkoCandleSet : CandleSet
 
         Instrument    = instrument;
         BrickTicks    = brickTicks;
-        _brickSizeDec = brickTicks * instrument.TickSize;
+        // RenkoCandleSet still uses decimal *internally* so that the
+        // _lastCloseDec + N * _brickSizeDec brick-boundary math stays exact
+        // after long chains. The public API is all doubles; the cast happens
+        // once here at construction.
+        _brickSizeDec = brickTicks * (decimal)instrument.TickSize;
         _brickSize    = (double)_brickSizeDec;
         _withWicks    = withWicks;
     }

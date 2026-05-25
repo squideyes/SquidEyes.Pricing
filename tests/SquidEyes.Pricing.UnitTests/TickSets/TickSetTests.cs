@@ -12,8 +12,8 @@ public class TickSetTests
     public void NonGenericEnumerator_YieldsSameTicks()
     {
         var builder = TickSet.CreateBuilder(Symbol.ES, Feb2, H26_ES);
-        builder.Add(28_800_000, PriceKind.Bid, 6900.00m, 10);
-        builder.Add(28_800_004, PriceKind.Ask, 6900.25m, 15);
+        builder.Add(28_800_000, PriceKind.Bid, 6900.00, 10);
+        builder.Add(28_800_004, PriceKind.Ask, 6900.25, 15);
         var ts = builder.Build();
 
         var generic = ts.ToList();

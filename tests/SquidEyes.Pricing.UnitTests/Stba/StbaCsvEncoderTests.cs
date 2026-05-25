@@ -24,10 +24,10 @@ public class StbaCsvEncoderTests
     public void Encode_PreservesRowOrder()
     {
         var b = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        b.Add(28800000, PriceKind.Bid,      6900.00m, 10);
-        b.Add(28800000, PriceKind.Ask,      6900.25m, 15);
-        b.Add(28800000, PriceKind.TradeAsk, 6900.25m,  3);
-        b.Add(28800100, PriceKind.TradeBid, 6900.00m,  7);
+        b.Add(28800000, PriceKind.Bid,      6900.00, 10);
+        b.Add(28800000, PriceKind.Ask,      6900.25, 15);
+        b.Add(28800000, PriceKind.TradeAsk, 6900.25,  3);
+        b.Add(28800100, PriceKind.TradeBid, 6900.00,  7);
         var ts = b.Build();
 
         var lines = EncodeToLines(ts);
@@ -65,7 +65,7 @@ public class StbaCsvEncoderTests
     public void Encode_StripsTrailingZerosFromPrice()
     {
         var b = TickSet.CreateBuilder(Symbol.NQ, Feb2, Contract.Create(Symbol.NQ, "H26"));
-        b.Add(28800000, PriceKind.TradeAsk, 20000.50m, 2);
+        b.Add(28800000, PriceKind.TradeAsk, 20000.50, 2);
         var ts = b.Build();
 
         var line = EncodeToLines(ts)[1];
@@ -77,7 +77,7 @@ public class StbaCsvEncoderTests
     public void Encode_RoundTripsThroughStreamOverload()
     {
         var b = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        b.Add(28800000, PriceKind.Bid, 6900.00m, 10);
+        b.Add(28800000, PriceKind.Bid, 6900.00, 10);
         var ts = b.Build();
 
         using var ms = new MemoryStream();

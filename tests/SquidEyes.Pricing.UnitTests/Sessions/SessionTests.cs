@@ -128,7 +128,7 @@ public class SessionTests
     public void AddAnchoredEmbargo_Appends_AndReturnsCreated()
     {
         var s = Session.Create(Jan2_2024, SessionKind.DTH);
-        var e = s.AddAnchoredEmbargo(SessionAnchor.Start, TimeSpan.FromMinutes(1), "open-1m");
+        var e = s.AddAnchoredEmbargo(SessionAnchor.Start, TimeSpan.FromMinutes(1), "open-1");
 
         Assert.Single(s.Embargoes);
         Assert.Equal(EmbargoKind.Anchored, e.Kind);
