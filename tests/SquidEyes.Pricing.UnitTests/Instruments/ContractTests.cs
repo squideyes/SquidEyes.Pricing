@@ -9,6 +9,12 @@ public class ContractTests
     [InlineData(Symbol.NQ, "Z25", 'Z', 25)]
     [InlineData(Symbol.CL, "F24", 'F', 24)]
     [InlineData(Symbol.GC, "G26", 'G', 26)]
+    [InlineData(Symbol.MES, "H26", 'H', 26)]
+    [InlineData(Symbol.MNQ, "M26", 'M', 26)]
+    [InlineData(Symbol.RTY, "U26", 'U', 26)]
+    [InlineData(Symbol.M2K, "Z25", 'Z', 25)]
+    [InlineData(Symbol.MGC, "J26", 'J', 26)]
+    [InlineData(Symbol.MCL, "K26", 'K', 26)]
     public void Create_ValidCode_SetsProperties(Symbol symbol, string code, char month, int year)
     {
         var contract = Contract.Create(symbol, code);
@@ -48,6 +54,34 @@ public class ContractTests
     public void Create_InvalidMonth_ForGold_Throws()
     {
         Assert.Throws<ArgumentException>(() => Contract.Create(Symbol.GC, "H26"));
+    }
+
+    [Fact]
+    public void Create_MGC_FollowsGoldMonthSet()
+    {
+        // MGC inherits GC's month set (G, J, M, Q, V, Z); H is not valid.
+        Assert.Throws<ArgumentException>(() => Contract.Create(Symbol.MGC, "H26"));
+        var ok = Contract.Create(Symbol.MGC, "Z26");
+        Assert.Equal('Z', ok.Month);
+    }
+
+    [Fact]
+    public void Create_MCL_AcceptsAnyMonth()
+    {
+        // MCL inherits CL's full-month set; F (Jan) is valid.
+        var jan = Contract.Create(Symbol.MCL, "F26");
+        Assert.Equal('F', jan.Month);
+        var nov = Contract.Create(Symbol.MCL, "X26");
+        Assert.Equal('X', nov.Month);
+    }
+
+    [Fact]
+    public void Create_MES_QuarterlyOnly()
+    {
+        // Micro equity index futures inherit the default quarterly set (H, M, U, Z).
+        Assert.Throws<ArgumentException>(() => Contract.Create(Symbol.MES, "F26"));
+        var ok = Contract.Create(Symbol.MES, "H26");
+        Assert.Equal('H', ok.Month);
     }
 
     [Fact]

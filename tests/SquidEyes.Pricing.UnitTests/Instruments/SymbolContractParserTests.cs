@@ -12,6 +12,12 @@ public class SymbolContractParserTests
     [InlineData("ESH6", 2025, Symbol.ES, "H26")]
     [InlineData("NQH5", 2025, Symbol.NQ, "H25")]
     [InlineData("ESH26", 2025, Symbol.ES, "H26")]
+    [InlineData("MESH26", 2025, Symbol.MES, "H26")]
+    [InlineData("MNQM6", 2025, Symbol.MNQ, "M26")]
+    [InlineData("RTYU5", 2025, Symbol.RTY, "U25")]
+    [InlineData("M2KZ25", 2025, Symbol.M2K, "Z25")]
+    [InlineData("MGCJ26", 2025, Symbol.MGC, "J26")]
+    [InlineData("MCLK26", 2025, Symbol.MCL, "K26")]
     public void TryParse_FromExpandableNames(string segment, int dataYear, Symbol expectedSymbol, string expectedContract)
     {
         var result = SymbolContractParser.TryParse(segment, new DateOnly(dataYear, 6, 15));
