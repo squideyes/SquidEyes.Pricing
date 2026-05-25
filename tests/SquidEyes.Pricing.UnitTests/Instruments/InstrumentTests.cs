@@ -15,7 +15,7 @@ public class InstrumentTests
     [InlineData(Symbol.M2K, 0.10)]
     [InlineData(Symbol.MGC, 0.10)]
     [InlineData(Symbol.MCL, 0.01)]
-    public void Create_ReturnsCorrectTickSize(Symbol symbol, decimal expectedTickSize)
+    public void Create_ReturnsCorrectTickSize(Symbol symbol, double expectedTickSize)
     {
         var instrument = Instrument.Create(symbol);
         Assert.Equal(expectedTickSize, instrument.TickSize);

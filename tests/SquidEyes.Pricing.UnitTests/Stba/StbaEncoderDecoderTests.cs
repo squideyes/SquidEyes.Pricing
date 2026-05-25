@@ -23,7 +23,7 @@ public class StbaEncoderDecoderTests
         Assert.Equal(Symbol.ES, decoded.Instrument.Symbol);
         Assert.Equal(new DateOnly(2026, 2, 2), decoded.Date);
         Assert.Equal("H26", decoded.Contract.Code);
-        Assert.Equal(0.25m, decoded.Instrument.TickSize);
+        Assert.Equal(0.25, decoded.Instrument.TickSize);
         Assert.Equal(0, decoded.Count);
     }
 
@@ -31,7 +31,7 @@ public class StbaEncoderDecoderTests
     public void Roundtrip_SingleTradeBid_PreservesData()
     {
         var builder = TickSet.CreateBuilder(NQ, Jan15, H26_NQ);
-        builder.Add(28800000, PriceKind.TradeBid, 20000.25m, 5);
+        builder.Add(28800000, PriceKind.TradeBid, 20000.25, 5);
         var original = builder.Build();
 
         var decoded = RoundTrip(original);
@@ -48,7 +48,7 @@ public class StbaEncoderDecoderTests
     public void Roundtrip_SingleTradeAsk_PreservesData()
     {
         var builder = TickSet.CreateBuilder(NQ, Jan15, H26_NQ);
-        builder.Add(28800000, PriceKind.TradeAsk, 20000.50m, 3);
+        builder.Add(28800000, PriceKind.TradeAsk, 20000.50, 3);
         var original = builder.Build();
 
         var decoded = RoundTrip(original);
@@ -63,12 +63,12 @@ public class StbaEncoderDecoderTests
     public void Roundtrip_MixedKinds_PreservesAllTicks()
     {
         var builder = TickSet.CreateBuilder(ES, Mar2, H26_ES);
-        builder.Add(28800000, PriceKind.Bid, 6900.00m, 10);
-        builder.Add(28800000, PriceKind.Ask, 6900.25m, 15);
-        builder.Add(28800000, PriceKind.TradeAsk, 6900.25m, 3);
-        builder.Add(28800004, PriceKind.Bid, 6900.25m, 20);
-        builder.Add(28800004, PriceKind.Ask, 6900.50m, 25);
-        builder.Add(28800100, PriceKind.TradeBid, 6900.00m, 7);
+        builder.Add(28800000, PriceKind.Bid, 6900.00, 10);
+        builder.Add(28800000, PriceKind.Ask, 6900.25, 15);
+        builder.Add(28800000, PriceKind.TradeAsk, 6900.25, 3);
+        builder.Add(28800004, PriceKind.Bid, 6900.25, 20);
+        builder.Add(28800004, PriceKind.Ask, 6900.50, 25);
+        builder.Add(28800100, PriceKind.TradeBid, 6900.00, 7);
         var original = builder.Build();
 
         var decoded = RoundTrip(original);
@@ -91,10 +91,10 @@ public class StbaEncoderDecoderTests
     {
         // Both kinds use lastPriceT — encode a sequence and confirm round-trip prices.
         var builder = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        builder.Add(28800000, PriceKind.TradeBid, 6900.00m, 1);
-        builder.Add(28800004, PriceKind.TradeAsk, 6900.25m, 2);
-        builder.Add(28800008, PriceKind.TradeBid, 6900.00m, 3);
-        builder.Add(28800012, PriceKind.TradeAsk, 6901.00m, 4);
+        builder.Add(28800000, PriceKind.TradeBid, 6900.00, 1);
+        builder.Add(28800004, PriceKind.TradeAsk, 6900.25, 2);
+        builder.Add(28800008, PriceKind.TradeBid, 6900.00, 3);
+        builder.Add(28800012, PriceKind.TradeAsk, 6901.00, 4);
         var original = builder.Build();
 
         var decoded = RoundTrip(original);
@@ -112,8 +112,8 @@ public class StbaEncoderDecoderTests
     public void Roundtrip_AggregatesDuplicateKeys()
     {
         var builder = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        builder.Add(28800000, PriceKind.Bid, 6900.00m, 10);
-        builder.Add(28800000, PriceKind.Bid, 6900.00m, 5);
+        builder.Add(28800000, PriceKind.Bid, 6900.00, 10);
+        builder.Add(28800000, PriceKind.Bid, 6900.00, 5);
         var original = builder.Build();
 
         Assert.Equal(1, original.Count);
@@ -129,9 +129,9 @@ public class StbaEncoderDecoderTests
     public void Roundtrip_NegativePriceDelta_HandledCorrectly()
     {
         var builder = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        builder.Add(28800000, PriceKind.TradeBid, 6950.00m, 1);
-        builder.Add(28800004, PriceKind.TradeBid, 6940.00m, 2);
-        builder.Add(28800008, PriceKind.TradeBid, 6960.00m, 3);
+        builder.Add(28800000, PriceKind.TradeBid, 6950.00, 1);
+        builder.Add(28800004, PriceKind.TradeBid, 6940.00, 2);
+        builder.Add(28800008, PriceKind.TradeBid, 6960.00, 3);
         var original = builder.Build();
 
         var decoded = RoundTrip(original);
@@ -146,9 +146,9 @@ public class StbaEncoderDecoderTests
     public void Roundtrip_ByteIdentical()
     {
         var builder = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        builder.Add(28800000, PriceKind.Bid, 6900.00m, 10);
-        builder.Add(28800000, PriceKind.Ask, 6900.25m, 15);
-        builder.Add(28800004, PriceKind.TradeAsk, 6900.25m, 3);
+        builder.Add(28800000, PriceKind.Bid, 6900.00, 10);
+        builder.Add(28800000, PriceKind.Ask, 6900.25, 15);
+        builder.Add(28800004, PriceKind.TradeAsk, 6900.25, 3);
         var original = builder.Build();
 
         using var ms1 = new MemoryStream();
@@ -167,20 +167,20 @@ public class StbaEncoderDecoderTests
     public void Add_OutOfOrder_Throws()
     {
         var builder = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        builder.Add(28800004, PriceKind.TradeBid, 6900.00m, 1);
+        builder.Add(28800004, PriceKind.TradeBid, 6900.00, 1);
 
         Assert.Throws<InvalidOperationException>(() =>
-            builder.Add(28800000, PriceKind.TradeBid, 6900.00m, 2));
+            builder.Add(28800000, PriceKind.TradeBid, 6900.00, 2));
     }
 
     [Fact]
     public void Add_OutOfOrder_SameTime_WrongKind_Throws()
     {
         var builder = TickSet.CreateBuilder(ES, Feb2, H26_ES);
-        builder.Add(28800000, PriceKind.Ask, 6900.00m, 1);
+        builder.Add(28800000, PriceKind.Ask, 6900.00, 1);
 
         Assert.Throws<InvalidOperationException>(() =>
-            builder.Add(28800000, PriceKind.Bid, 6900.00m, 2));
+            builder.Add(28800000, PriceKind.Bid, 6900.00, 2));
     }
 
     [Fact]

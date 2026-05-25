@@ -142,7 +142,7 @@ public class EmbargoTests
     public void Anchored_Start_ResolvesAtSessionFrom()
     {
         var s = NewDth();  // 08:00–16:00
-        var e = s.AddAnchoredEmbargo(SessionAnchor.Start, TimeSpan.FromMinutes(1), "open-1m");
+        var e = s.AddAnchoredEmbargo(SessionAnchor.Start, TimeSpan.FromMinutes(1), "open-1");
         var (from, until) = e.ResolveRange(s);
 
         Assert.Equal(new TimeOnly(8, 0), from);
@@ -153,7 +153,7 @@ public class EmbargoTests
     public void Anchored_End_ResolvesAtSessionUntil()
     {
         var s = NewDth();  // 08:00–16:00
-        var e = s.AddAnchoredEmbargo(SessionAnchor.End, TimeSpan.FromMinutes(5), "close-5m");
+        var e = s.AddAnchoredEmbargo(SessionAnchor.End, TimeSpan.FromMinutes(5), "close-5");
         var (from, until) = e.ResolveRange(s);
 
         Assert.Equal(new TimeOnly(15, 55), from);
@@ -164,7 +164,7 @@ public class EmbargoTests
     public void Anchored_IsEmbargoed_InsideOpening_True()
     {
         var s = NewDth();
-        var e = s.AddAnchoredEmbargo(SessionAnchor.Start, TimeSpan.FromMinutes(1), "open-1m");
+        var e = s.AddAnchoredEmbargo(SessionAnchor.Start, TimeSpan.FromMinutes(1), "open-1");
         Assert.True (e.IsEmbargoed(s, new DateTime(2024, 1, 2, 8, 0, 30)));
         Assert.False(e.IsEmbargoed(s, new DateTime(2024, 1, 2, 8, 1, 0)));
     }
