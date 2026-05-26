@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0](https://github.com/squideyes/SquidEyes.Pricing/compare/v1.0.1...v2.0.0) (2026-05-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Instrument.TickSize is now double (was decimal)
+* replace NewsImpact minute properties with PrePost record
+
+### Features
+
+* add e-micro futures (MES, MNQ, RTY, M2K, MGC, MCL) ([be8e31e](https://github.com/squideyes/SquidEyes.Pricing/commit/be8e31eace07809c5f338c25fc2cb7be6fcceded))
+* add e-micro futures (MES, MNQ, RTY, M2K, MGC, MCL) ([bdc1ee4](https://github.com/squideyes/SquidEyes.Pricing/commit/bdc1ee4cc875fd4f0fa7b8ba94e3ce64e1f03341))
+* CandleSet family — rolling, tick-driven, capacity-bounded candle collections ([e3cb80b](https://github.com/squideyes/SquidEyes.Pricing/commit/e3cb80bb423ef8e9254e13b3e92afe266cd9621d))
+* EasternTime, PricingFile, StbaCsvEncoder, trade-calendar helpers ([d7b7f74](https://github.com/squideyes/SquidEyes.Pricing/commit/d7b7f7417716137c8e6d17ccb7d0d72f3376b8ea))
+* Instrument.TickSize is now double (was decimal) ([2e109f1](https://github.com/squideyes/SquidEyes.Pricing/commit/2e109f1bc2bffe4b186044e834418519b69b2b63))
+* replace NewsImpact minute properties with PrePost record ([30cdf02](https://github.com/squideyes/SquidEyes.Pricing/commit/30cdf02e9d73c871282e159a38706143b717e5f6))
+
 ## [Unreleased]
 
 ### Added
