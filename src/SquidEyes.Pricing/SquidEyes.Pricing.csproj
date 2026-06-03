@@ -5,8 +5,8 @@
     <PackageId>SquidEyes.Pricing</PackageId>
     <Authors>Louis S. Berman</Authors>
     <Company>SquidEyes, LLC</Company>
-    <Description>Pricing-data primitives for futures backtesting: Symbol/Asset/Contract, TimeRange + holiday-aware trade-date calendar, immutable TickSets, and the STBA (Squideyes Trade/Bid/Ask) compact binary format — typically ~10x smaller than Parquet for MBP-1 tick streams.</Description>
-    <PackageTags>pricing;ticks;tickset;futures;stba;backtest;binary-format;cme</PackageTags>
+    <Description>Pricing-data primitives for futures backtesting: Symbol/Asset/Contract, TimeRange + holiday-aware trade-date calendar, immutable TickSets, the STBA (Squideyes Trade/Bid/Ask) compact binary format (~10x smaller than Parquet for MBP-1 tick streams), and STBAD — its MBP-10 depth sibling carrying the full 10-level book with allocation-free streaming reads and time-seek.</Description>
+    <PackageTags>pricing;ticks;tickset;depth;mbp10;futures;stba;stbad;backtest;binary-format;cme</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>Squidly.png</PackageIcon>

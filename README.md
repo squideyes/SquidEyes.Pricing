@@ -17,6 +17,9 @@ Pricing-data primitives for futures backtesting:
 - `DateOnlyExtenders` trade-calendar query helpers — `IsTradeDate`, `EarliestTradeDate`, `LatestTradeDateBefore`, `EnumerateTradeDates`.
 - `StbaEncoder` / `StbaDecoder` — **STBA** (Squideyes Trade/Bid/Ask) compact binary format; typically ~10× smaller than Parquet for MBP-1 tick streams
 - `StbaCsvEncoder` — symmetric CSV companion to `StbaEncoder`. Same logical content (`OnET,Kind,Price,Size`, kinds `B/A/H/L`), human-readable, diffable.
+- `StbadEncoder` / `StbadDecoder` / `StbadReader` — **STBAD** (STBA + Depth) self-contained binary format carrying the full **MBP-10** 10-level book on both sides (slot-overwrite); per-block keyframe + delta events, footer seek index, CRC-32C, and allocation-free forward streaming with `Seek`
+- `DepthBook` / `DepthLevel` / `DepthEvent` / `DepthTickSet` — materialized depth model (the depth analog of `TickSet`)
+- `StbadCsvEncoder` / `DepthQualityReport` — CSV companion and a per-day depth-capture audit (per-level fill rates, crossed/locked frequency, bytes/event)
 
 ## Install
 
@@ -114,12 +117,24 @@ TradeBid and TradeAsk share one trade-price delta stream because futures trades 
 
 The encoder is deterministic — byte-identical output for byte-identical input. See [StbaEncoder.cs](src/SquidEyes.Pricing/Stba/StbaEncoder.cs).
 
+## STBAD depth format (v1)
+
+`.stbad` ("STBA + Depth") is a separate, self-contained binary format for **MBP-10** depth — the full 10-level book on both sides, captured with the **slot-overwrite** model: each event names the slots that changed and their new `(priceTicks, size, orderCount)`, and the decoder simply overwrites them (no insert/shift/sort).
+
+- **Layout** — fixed header → independently-decodable blocks (each = one keyframe + delta events, Brotli-compressed per block) → footer block index for O(log n) time-seek + a CRC-32C body checksum.
+- **Events** — single-slot quote (`Q1`), multi-slot re-rank (`QN`, with a changed-slot bitmap), trade hit/lift (`H`/`L`), and keyframe (`KF`). Deltas are zig-zag varints (prices in integer ticks, nanosecond timestamps).
+- **Reading** — `StbadDecoder.Decode` (eager) or `StbadReader` for allocation-free forward streaming (`Read(out DepthEvent)` mutating one reused `DepthBook`) plus `Seek(DateTime)`.
+- **Determinism** — byte-identical round-trip: `decode(encode(x)) == x` and `encode(decode(bytes)) == bytes`.
+
+`.stba` (L1) is unchanged and fully independent — `.stbad` is a clean format, not a version of it. See [StbadEncoder.cs](src/SquidEyes.Pricing/Stbad/StbadEncoder.cs).
+
 ## Namespace map
 
 | Namespace | What's in it |
 | --- | --- |
-| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `PrePost`, `Tick`, `TickSet`, `Candle`, `CandleSet`, `IntervalCandleSet`, `RenkoCandleSet`, `CandleClosedEventArgs`, `SymbolContractParser`, `EasternTime`, `PricingFile`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`, `EarliestTradeDate`, `LatestTradeDateBefore`, `EnumerateTradeDates`) |
+| `SquidEyes.Pricing` | `Symbol`, `Instrument`, `InstrumentKind`, `Contract`, `Source`, `PriceKind`, `SessionKind`, `Session`, `Embargo`, `EmbargoKind`, `NewsImpact`, `SessionAnchor`, `NewsImpactDefaults`, `PrePost`, `Tick`, `TickSet`, `Candle`, `CandleSet`, `IntervalCandleSet`, `RenkoCandleSet`, `CandleClosedEventArgs`, `SymbolContractParser`, `EasternTime`, `PricingFile`, `DateOnlyExtenders` (`IsTradeDate`, `IsWeekday`, `Format`, `EarliestTradeDate`, `LatestTradeDateBefore`, `EnumerateTradeDates`), `BookSide`, `DepthLevel`, `SlotChange`, `DepthEvent`, `DepthBook`, `DepthTickSet`, `DepthQualityReport` |
 | `SquidEyes.Pricing.Stba` | `StbaEncoder`, `StbaDecoder`, `StbaCsvEncoder` |
+| `SquidEyes.Pricing.Stbad` | `StbadEncoder`, `StbadDecoder`, `StbadReader`, `StbadCsvEncoder`, `StbadOptions` |
 
 ## Opinionated choices
 
