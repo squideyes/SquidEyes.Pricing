@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0](https://github.com/squideyes/SquidEyes.Pricing/compare/v2.0.0...v2.1.0) (2026-06-03)
+
+
+### Features
+
+* **stbad:** add STBAD MBP-10 depth format ([cf6ce72](https://github.com/squideyes/SquidEyes.Pricing/commit/cf6ce7290d9c59f062728b2dd885d259d8dbda12))
+
 ## [2.0.0](https://github.com/squideyes/SquidEyes.Pricing/compare/v1.0.1...v2.0.0) (2026-05-25)
 
 
