@@ -102,8 +102,8 @@ public static class StbadEncoder
         w.Write((byte)ts.Session);                  // 1
         w.Write(StbadFormat.Levels);                // 1
         w.Write((byte)(opt.IncludeOrderCount ? StbadFormat.FieldHasOrderCount : 0)); // 1
-        w.Write(ts.Instrument.TickSize);            // 16 (decimal)
-        w.Write(ts.Instrument.PointValue);          // 8  (double)
+        w.Write(ts.Instrument.TickSize);            // 8 (double)
+        w.Write(ts.Instrument.PointValue);          // 8 (double)
         w.Write(StbadFormat.TsResolutionNanos);     // 1
         w.Write(ts.SessionStart.Ticks);             // 8  (epoch anchor)
         w.Write(opt.Codec);                         // 1

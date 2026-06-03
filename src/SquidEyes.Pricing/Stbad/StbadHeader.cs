@@ -14,7 +14,7 @@ internal sealed class StbadHeader
     public required Source Source { get; init; }
     public required SessionKind Session { get; init; }
     public required bool HasOrderCount { get; init; }
-    public required decimal TickSize { get; init; }
+    public required double TickSize { get; init; }
     public required double PointValue { get; init; }
     public required DateTime SessionStart { get; init; }
     public required byte Codec { get; init; }
@@ -54,7 +54,7 @@ internal sealed class StbadHeader
 
         var fields = r.ReadByte();
         var hasCount = (fields & StbadFormat.FieldHasOrderCount) != 0;
-        var tickSize = r.ReadDecimal();
+        var tickSize = r.ReadDouble();
         var pointValue = r.ReadDouble();
 
         var tsResolution = r.ReadByte();
